@@ -6,6 +6,8 @@ import (
 	"io"
 	"net"
 	"os"
+	"runtime"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -32,8 +34,8 @@ type contract struct {
 }
 
 type agreementResponse struct {
-	Lat       string     `json:"lat"`
-	Lon       string     `json:"lon"`
+	Lat       float64    `json:"lat"`
+	Lon       float64    `json:"lon"`
 	Contracts []contract `json:"contracts"`
 }
 
@@ -96,9 +98,12 @@ func (s *dpeServerImpl) Store(stream synchrophasor_dpe.SynchrophasorDPE_StoreSer
 						ag.Contracts = append(ag.Contracts, con)
 					}
 				} else {
+					latF, _ := strconv.ParseFloat(wrappedDatum.Lat, 64)
+					lonF, _ := strconv.ParseFloat(wrappedDatum.Lon, 64)
+
 					s.agreementMap[key] = agreementResponse{
-						Lat:       wrappedDatum.Lat,
-						Lon:       wrappedDatum.Lon,
+						Lat:       latF,
+						Lon:       lonF,
 						Contracts: []contract{con},
 					}
 				}
@@ -106,6 +111,7 @@ func (s *dpeServerImpl) Store(stream synchrophasor_dpe.SynchrophasorDPE_StoreSer
 				s.agreementMapMutex.Unlock()
 			}
 		}
+		runtime.Gosched()
 	}
 }
 

@@ -1,0 +1,7 @@
+FROM alpine:3.5
+MAINTAINER mdye <mdye@us.ibm.com>
+
+ADD . /prj
+
+EXPOSE 8080 9009
+CMD ["/prj/synchrophasor-dpe", "-v", "5", "-logtostderr"]
