@@ -1,6 +1,7 @@
 package api
 
 import (
+	"os"
 	"sync"
 
 	"encoding/json"
@@ -96,6 +97,24 @@ func status(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// from gorilla ws docs
+func streamHandler(dataChannel <-chan *synchrophasor_dpe.HorizonDatumWrapper) func(http.ResponseWriter, *http.Request) {
+
+	hub := newHub(dataChannel)
+	go hub.run()
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		conn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			glog.Error(err)
+			return
+		}
+		client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
+		client.hub.register <- client
+		go client.writePump()
+	}
+}
+
 // StartHTTPServer blocks and serves both HTTP API and WS clients.
 func StartHTTPServer(bindHTTP string, agreementMap map[string]AgreementResponse, agreementMapMutex *sync.Mutex, dataChannel <-chan *synchrophasor_dpe.HorizonDatumWrapper) {
 	glog.Infof("Starting HTTP API and WS server on %v", bindHTTP)
@@ -105,8 +124,8 @@ func StartHTTPServer(bindHTTP string, agreementMap map[string]AgreementResponse,
 
 		router.HandleFunc("/agreements", agreementHandler(agreementMap, agreementMapMutex)).Methods("GET")
 		router.HandleFunc("/status", status).Methods("GET")
-		router.HandleFunc("/subscribe", clientSubscribe)
-		router.HandleFunc("/subscribe/stream", serveStream)
+		router.PathPrefix("/web").Handler(http.FileServer(http.Dir(os.Getenv("DPE_SERVE_PATH"))))
+		router.HandleFunc("/stream/data", streamHandler(dataChannel))
 
 		http.ListenAndServe(bindHTTP, router)
 	}()

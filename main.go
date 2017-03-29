@@ -22,7 +22,7 @@ const (
 	defaultBindRPC  = "0.0.0.0:9009"
 	defaultBindHTTP = "0.0.0.0:8080"
 
-	clientChannelBufferMax = 2e8
+	clientChannelBufferMax = 2e4
 )
 
 // dpeServerImpl is an implementation of the protobuf's interface for a SynchrophasorDPEServer, an interface for storing Synchrophasor data from an edge publisher.
@@ -108,6 +108,14 @@ func dedup(in <-chan *synchrophasor_dpe.HorizonDatumWrapper) <-chan *synchrophas
 
 	go func() {
 		// continually process input data, deduplicate and send single stream to output
+		for {
+			select {
+			case msg := <-in:
+				glog.V(6).Infof("Sending message: %v", msg)
+				out <- msg
+			}
+			runtime.Gosched()
+		}
 	}()
 
 	return out
