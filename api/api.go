@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 	"net/http"
 
 	"github.com/michaeldye/synchrophasor-proto/synchrophasor_dpe"
@@ -99,6 +100,11 @@ func status(w http.ResponseWriter, r *http.Request) {
 
 // from gorilla ws docs
 func streamHandler(dataChannel <-chan *synchrophasor_dpe.HorizonDatumWrapper) func(http.ResponseWriter, *http.Request) {
+	upgrader := websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+		CheckOrigin:     func(r *http.Request) bool { return true },
+	}
 
 	hub := newHub(dataChannel)
 	go hub.run()
