@@ -39,4 +39,4 @@ This project requires that you build it from the proper place in your `$GOPATH`.
 
 ### Steps
 
-  make
+    make
