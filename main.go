@@ -43,9 +43,11 @@ func toLatLonKey(lat float32, lon float32) string {
 
 func saveDatumTransmitter(wrappedDatum *synchrophasor_dpe.HorizonDatumWrapper, agreementMap map[string]api.AgreementResponse, agreementMapMutex *sync.Mutex) {
 	con := api.Contract{
-		Type: 19,
-		ID:   wrappedDatum.AgreementID,
-		Ts:   time.Now().Unix(),
+		Type:     19,
+		ID:       wrappedDatum.AgreementId,
+		Ts:       uint64(time.Now().Unix()),
+		DeviceTs: wrappedDatum.Datum.DeviceTs,
+		DeviceID: wrappedDatum.DeviceId,
 	}
 
 	key := toLatLonKey(wrappedDatum.Lat, wrappedDatum.Lon)
@@ -91,7 +93,7 @@ func (s *dpeServerImpl) Store(stream synchrophasor_dpe.SynchrophasorDPE_StoreSer
 			return fmt.Errorf("%v.Store(_) = _, %v", stream, err)
 		}
 
-		if wrappedDatum.Lon != 0 && wrappedDatum.Lat != 0 && wrappedDatum.AgreementID != "" {
+		if wrappedDatum.Lon != 0 && wrappedDatum.Lat != 0 && wrappedDatum.AgreementId != "" {
 			// ensure well-formed before forming key and saving datum
 			saveDatumTransmitter(wrappedDatum, s.agreementMap, s.agreementMapMutex)
 
@@ -126,7 +128,7 @@ func dedup(in <-chan *synchrophasor_dpe.HorizonDatumWrapper) <-chan *synchrophas
 			select {
 			case msg := <-in:
 
-				glog.V(5).Infof("Considering sending record from partner %v w/ id: %v", msg.DeviceID, msg.Datum.Id)
+				glog.V(5).Infof("Considering sending record from partner %v w/ id: %v", msg.DeviceId, msg.Datum.Id)
 
 				if publishedTS, partnerID := ring.PartnerPublished(msg); partnerID != "" {
 

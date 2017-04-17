@@ -1,0 +1,8 @@
+FROM ##from_image##
+MAINTAINER mdye <mdye@us.ibm.com>
+
+ADD . /prj
+
+ENV "DPE_SERVE_PATH=/prj/"
+EXPOSE 8080 9009
+CMD ["/prj/synchrophasor-dpe", "-v", "5", "-logtostderr"]

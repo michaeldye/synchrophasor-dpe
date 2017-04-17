@@ -1,0 +1,23 @@
+#!/bin/bash -e
+
+if [ "$#" -lt 2 ]; then
+  echo 2> "Usage:\n$0 arch template_fname"
+  exit 1
+fi
+
+P="$(dirname $2)"
+FNAME="$(basename $2 .tmpl)"
+DEST="$P/$FNAME"
+
+cp "$2" "$DEST"
+
+if [ "$1" == "armv7l" ]; then
+  sed -i 's|##from_image##|armhf/alpine:3.5|' "$DEST"
+elif [ "$1" == "x86_64" ]; then
+  sed -i 's|##from_image##|alpine:3.5|' "$DEST"
+else
+  echo 2> "Unknown architecture: $1"
+  exit 1
+fi
+
+sed -i "s|##arch##|$1|" "$DEST"

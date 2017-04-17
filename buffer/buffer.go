@@ -83,9 +83,9 @@ func (r *RingBuffer) PartnerPublished(wrapped *synchrophasor_dpe.HorizonDatumWra
 			break
 		}
 
-		if d.Wrapped.Datum.Id == wrapped.Datum.Id && d.Wrapped.DeviceID != wrapped.DeviceID {
-			for _, p := range d.Wrapped.HAPartners {
-				if p == wrapped.DeviceID {
+		if d.Wrapped.Datum.Id == wrapped.Datum.Id && d.Wrapped.DeviceId != wrapped.DeviceId {
+			for _, p := range d.Wrapped.HaPartners {
+				if p == wrapped.DeviceId {
 					// this message was published by an HA partner
 					return d.PublishedTS, p
 				}

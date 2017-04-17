@@ -15,9 +15,11 @@ import (
 
 // Contract represents a Horizon contract agreement.
 type Contract struct {
-	Type int    `json:"type"`
-	ID   string `json:"id"`
-	Ts   int64  `json:"ts"`
+	Type     int     `json:"type"`
+	ID       string  `json:"id"`
+	Ts       uint64  `json:"ts"`
+	DeviceTs float64 `json:"device_ts"`
+	DeviceID string  `json:"device_id"`
 }
 
 // AgreementResponse is a type for serialized API output.
@@ -135,14 +137,4 @@ func StartHTTPServer(bindHTTP string, agreementMap map[string]AgreementResponse,
 
 		http.ListenAndServe(bindHTTP, router)
 	}()
-}
-
-func dedup(in <-chan *synchrophasor_dpe.HorizonDatumWrapper) <-chan *synchrophasor_dpe.HorizonDatumWrapper {
-	out := make(chan *synchrophasor_dpe.HorizonDatumWrapper)
-
-	go func() {
-		// continually process input data, deduplicate and send single stream to output
-	}()
-
-	return out
 }
