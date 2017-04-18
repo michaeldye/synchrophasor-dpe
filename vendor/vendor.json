@@ -39,16 +39,13 @@
 			"revisionTime": "2017-03-19T17:27:27Z"
 		},
 		{
-			"checksumSHA1": "C+ZPJq5K02VSCz8J5c6pxHOX1tA=",
-			"path": "github.com/michaeldye/synchrophasor-proto/pmu_server",
-			"revision": "f1abe84b30102c8db0301f7bec497aee9107f05a",
-			"revisionTime": "2017-04-17T21:02:46Z"
-		},
-		{
-			"checksumSHA1": "1UsjJ6TLyqAaNK5mCvUsd8MLb/M=",
-			"path": "github.com/michaeldye/synchrophasor-proto/synchrophasor_dpe",
-			"revision": "76f3fbbd131c2a2c198542fc1398a42eb94e92f2",
-			"revisionTime": "2017-04-17T20:01:29Z"
+			"checksumSHA1": "FNBRWn2oK+Qg90kqtEJhfEd9SdI=",
+			"path": "github.com/michaeldye/synchrophasor-proto",
+			"revision": "fe5db8a9ffaad3158e514e3132b27e680cab726d",
+			"revisionTime": "2017-04-18T00:14:17Z",
+			"tree": true,
+			"version": "0.1",
+			"versionExact": "0.1"
 		},
 		{
 			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",

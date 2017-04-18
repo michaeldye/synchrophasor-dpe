@@ -19,11 +19,13 @@ endif
 all: $(EXECUTABLE)
 
 # will always run b/c deps target is PHONY
-$(EXECUTABLE): $(shell find . -name '*.go' -not -path './vendor/*') deps
+$(EXECUTABLE): $(shell find . -name '*.go' -not -path './vendor/*') proto
 	$(COMPILE_ARGS) go build -o $(EXECUTABLE)
 
 clean:
 	find ./vendor -maxdepth 1 -not -path ./vendor -and -not -iname "vendor.json" -print0 | xargs -0 rm -Rf
+	-cd $(GOPATH)/src/github.com/michaeldye/synchrophasor-proto && \
+		make clean
 	rm -f $(EXECUTABLE)
 	rm -f Dockerfile-exec
 	-docker rmi $(DOCKER_IMAGE):{$(DOCKER_TAG),latest}
@@ -68,4 +70,9 @@ publish: dirty clean test test-integration docker-push
 	git tag $(VERSION) -f
 	git push -f --tags canonical master
 
-.PHONY: clean deps docker install lint publish test test-integration
+proto: deps
+	# we do this here b/c govendor doesn't fetch non-go files without special handling
+	cd $(GOPATH)/src/github.com/michaeldye/synchrophasor-proto && \
+		make
+
+.PHONY: clean deps docker install lint publish proto test test-integration
