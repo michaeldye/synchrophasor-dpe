@@ -1,7 +1,6 @@
 SHELL := /bin/bash
 # N.B. this is for compat only, we want to use uname -m instead
 ARCH = $(shell tools/arch-tag)
-
 VERSION = $(shell cat VERSION)
 
 EXECUTABLE = $(shell basename $$PWD)
@@ -24,7 +23,7 @@ $(EXECUTABLE): $(shell find . -name '*.go' -not -path './vendor/*') proto
 
 clean:
 	find ./vendor -maxdepth 1 -not -path ./vendor -and -not -iname "vendor.json" -print0 | xargs -0 rm -Rf
-	-cd $(GOPATH)/src/github.com/michaeldye/synchrophasor-proto && \
+	-cd ./vendor/github.com/michaeldye/synchrophasor-proto && \
 		make clean
 	rm -f $(EXECUTABLE)
 	rm -f Dockerfile-exec
@@ -53,8 +52,6 @@ docker-push: docker
 	docker push $(DOCKER_IMAGE):$(DOCKER_TAG)
 	docker push $(DOCKER_IMAGE):latest
 
-install: $(EXECUTABLE)
-
 lint:
 	-golint ./... | grep -v "vendor/"
 	-go vet ./... 2>&1 | grep -vP "exit\ status|vendor/"
@@ -72,7 +69,7 @@ publish: dirty clean test test-integration docker-push
 
 proto: deps
 	# we do this here b/c govendor doesn't fetch non-go files without special handling
-	cd $(GOPATH)/src/github.com/michaeldye/synchrophasor-proto && \
+	cd ./vendor/github.com/michaeldye/synchrophasor-proto && \
 		make
 
-.PHONY: clean deps docker install lint publish proto test test-integration
+.PHONY: clean deps docker install lint publish test test-integration

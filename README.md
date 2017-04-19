@@ -18,6 +18,7 @@ Example invocation:
 
  * Install `make`
  * Install Golang v.1.7.x or newer, set up an appropriate `$GOPATH`, etc. (cf. https://golang.org/doc/install)
+ * Install `protoc`, the Google protobuf compiler (cf. instructions at https://github.com/michaeldye/synchrophasor-proto)
  * Docker version 17.04.0-ce or newer
 
 ### Publishing a Docker Container
