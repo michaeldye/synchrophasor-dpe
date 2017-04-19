@@ -2,11 +2,15 @@
 
 A Data Processing Engine (DPE) for ingesting
 
-Example invocation:
+### Example native invocation
 
     synchrophasor-dpe -logtostderr -v 5
 
-## Related Projects
+### Example Docker container invocation
+
+    docker run --rm --name synchrophasor-dpe -p 127.0.0.1:8080:8080/tcp -p 127.0.0.1:9009:9009/tcp -t summit.hovitos.engineering/$(./tools/arch-tag)/synchrophasor-dpe:latest
+
+## Related projects
 
  * `synchrophasor-proto` (https://github.com/michaeldye/synchrophasor-proto): The protocol specifications for all synchrophasor data projects
  * `synchrophasor-publisher` (https://github.com/michaeldye/synchrophasor-publisher): A client that connects to the `pmu-emu`s gRPC server, processes data it gathers, and then publishes it to a gRPC ingest Data Processing Engine (DPE), an instances of `synchrophasor-dpe`
@@ -14,14 +18,28 @@ Example invocation:
 
 ## Development
 
-### Preconditions
+### Environment setup
 
  * Install `make`
  * Install Golang v.1.7.x or newer, set up an appropriate `$GOPATH`, etc. (cf. https://golang.org/doc/install)
  * Install `protoc`, the Google protobuf compiler (cf. instructions at https://github.com/michaeldye/synchrophasor-proto)
- * Docker version 17.04.0-ce or newer
+ * Install Docker Community Edition version 17.04.0-ce or newer (cf. https://www.docker.com/community-edition#/download or use https://get.docker.com/)
 
-### Publishing a Docker Container
+## Building
+
+### Considerations
+
+This project requires that you build it from the proper place in your `$GOPATH`. Also note that it will automatically install `govendor` in your `$GOPATH` when executing `make deps`.
+
+### Compiling the executable
+
+    make
+
+### Creating a Docker execution container
+
+    make docker
+
+## Publishing
 
 This project include the make target `publish` that is intended to be executed after a PR has been merged. (Note: this scheme does not have a notion of producing staged development or integration builds, only publishing production stuff. There might be some utility in later producing a `publish-integration` target that is stamped appropriately).
 
@@ -31,13 +49,3 @@ This project include the make target `publish` that is intended to be executed a
   - Execute all tests (`make test test-integration`)
   - Build a docker container and push it to the repository (`make docker-push`)
   - If the above are successful, tag the `canonical` git repository with the current value in `VERSION`
-
-## Building
-
-### Considerations
-
-This project requires that you build it from the proper place in your `$GOPATH`. Also note that it will automatically install `govendor` in your `$GOPATH` when executing `make deps`.
-
-### Steps
-
-    make
