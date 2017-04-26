@@ -13,6 +13,7 @@ import (
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
 
+	"github.com/michaeldye/synchrophasor-dpe/agreement"
 	"github.com/michaeldye/synchrophasor-dpe/api"
 	"github.com/michaeldye/synchrophasor-dpe/buffer"
 
@@ -37,51 +38,6 @@ type dpeServerImpl struct {
 	clientChannel     chan<- *synchrophasor_dpe.HorizonDatumWrapper
 }
 
-func toLatLonKey(lat float32, lon float32) string {
-	return fmt.Sprintf("%v,%v", lat, lon)
-}
-
-func saveDatumTransmitter(wrappedDatum *synchrophasor_dpe.HorizonDatumWrapper, agreementMap map[string]api.AgreementResponse, agreementMapMutex *sync.Mutex) {
-	con := api.Contract{
-		Type:     19,
-		ID:       wrappedDatum.AgreementId,
-		Ts:       uint64(time.Now().Unix()),
-		DeviceTs: wrappedDatum.Datum.DeviceTs,
-		DeviceID: wrappedDatum.DeviceId,
-	}
-
-	key := toLatLonKey(wrappedDatum.Lat, wrappedDatum.Lon)
-
-	agreementMapMutex.Lock()
-	if ag, exists := agreementMap[key]; exists {
-		updateIx := -1
-
-		for ix, exCon := range ag.Contracts {
-
-			if exCon.ID == con.ID {
-				updateIx = ix
-				break
-			}
-		}
-
-		if updateIx > -1 {
-			ag.Contracts[updateIx].Ts = con.Ts
-		} else {
-			ag.Contracts = append(ag.Contracts, con)
-		}
-	} else {
-		// TODO: handle these uglies
-
-		agreementMap[key] = api.AgreementResponse{
-			Lat:       wrappedDatum.Lat,
-			Lon:       wrappedDatum.Lon,
-			Contracts: []api.Contract{con},
-		}
-	}
-
-	agreementMapMutex.Unlock()
-}
-
 func (s *dpeServerImpl) Store(stream synchrophasor_dpe.SynchrophasorDPE_StoreServer) error {
 	for {
 		wrappedDatum, err := stream.Recv()
@@ -95,7 +51,7 @@ func (s *dpeServerImpl) Store(stream synchrophasor_dpe.SynchrophasorDPE_StoreSer
 
 		if wrappedDatum.Lon != 0 && wrappedDatum.Lat != 0 && wrappedDatum.AgreementId != "" {
 			// ensure well-formed before forming key and saving datum
-			saveDatumTransmitter(wrappedDatum, s.agreementMap, s.agreementMapMutex)
+			agreement.SaveDatumTransmitter(wrappedDatum, s.agreementMap, s.agreementMapMutex)
 
 			// write out the datum
 			s.clientChannel <- wrappedDatum

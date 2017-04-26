@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"os"
 	"sync"
 
@@ -22,11 +23,19 @@ type Contract struct {
 	DeviceID string  `json:"device_id"`
 }
 
+func (c Contract) String() string {
+	return fmt.Sprintf("Type: %v, ID: %v, Ts: %v, DeviceTs: %v, DeviceID: %v", c.Type, c.ID, c.Ts, c.DeviceTs, c.DeviceID)
+}
+
 // AgreementResponse is a type for serialized API output.
 type AgreementResponse struct {
-	Lat       float32    `json:"lat"`
-	Lon       float32    `json:"lon"`
-	Contracts []Contract `json:"contracts"`
+	Lat       float32     `json:"lat"`
+	Lon       float32     `json:"lon"`
+	Contracts *[]Contract `json:"contracts"`
+}
+
+func (r AgreementResponse) String() string {
+	return fmt.Sprintf("Lat: %v, Lon: %v, Contracts: %v", r.Lat, r.Lon, r.Contracts)
 }
 
 // dpeServerImpl is an implementation of the protobuf's interface for a SynchrophasorDPEServer, an interface for storing Synchrophasor data from an edge publisher.
