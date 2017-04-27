@@ -39,13 +39,13 @@
 			"revisionTime": "2017-03-19T17:27:27Z"
 		},
 		{
-			"checksumSHA1": "1eS0zRLDNKLoDiYRn4Rv4epkFJw=",
+			"checksumSHA1": "ApGfJDURf9HtRQhYgZj/HBQHuuY=",
 			"path": "github.com/michaeldye/synchrophasor-proto",
-			"revision": "15112ad73e9e6eaf8092eb339fa44ba0cb0c9668",
-			"revisionTime": "2017-04-25T21:54:31Z",
+			"revision": "4e5119d0f902426c46fdf26e2dc53ca678a2045f",
+			"revisionTime": "2017-04-26T23:47:05Z",
 			"tree": true,
-			"version": "0.3",
-			"versionExact": "0.3"
+			"version": "0.4",
+			"versionExact": "0.4"
 		},
 		{
 			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
