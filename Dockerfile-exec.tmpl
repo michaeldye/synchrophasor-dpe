@@ -1,8 +1,13 @@
 FROM ##from_image##
 MAINTAINER mdye <mdye@us.ibm.com>
 
-ADD . /prj
+RUN mkdir -p /usr/local/synchrophasor/
+ADD ./synchrophasor-dpe /usr/local/synchrophasor/
+ADD ./VERSION /usr/local/synchrophasor/
+ADD ./web /usr/local/synchrophasor/web
 
-ENV "DPE_SERVE_PATH=/prj/"
+ENV "DPE_SERVE_PATH=/usr/local/synchrophasor"
 EXPOSE 8080 9009
-CMD ["/prj/synchrophasor-dpe", "-v", "5", "-logtostderr"]
+
+WORKDIR /usr/local/synchrophasor/
+CMD ["./synchrophasor-dpe", "-v", "5", "-logtostderr"]

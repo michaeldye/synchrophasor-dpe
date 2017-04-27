@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// ToLatLonKey produces a stable key for tracking datum transmitting clients
 func ToLatLonKey(lat float32, lon float32) string {
 	return fmt.Sprintf("%v,%v", lat, lon)
 }
@@ -42,8 +43,6 @@ func SaveDatumTransmitter(wrappedDatum *synchrophasor_dpe.HorizonDatumWrapper, a
 			(*ag.Contracts) = append(*ag.Contracts, con)
 		}
 	} else {
-		// TODO: handle these uglies
-
 		agreementMap[key] = api.AgreementResponse{
 			Lat:       wrappedDatum.Lat,
 			Lon:       wrappedDatum.Lon,

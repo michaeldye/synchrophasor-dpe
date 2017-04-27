@@ -4,7 +4,7 @@ A Data Processing Engine (DPE) for ingesting
 
 ### Example native invocation
 
-    synchrophasor-dpe -logtostderr -v 5
+    DPE_SERVE_PATH=$(pwd)/ ./synchrophasor-dpe -logtostderr -v 5
 
 ### Example Docker container invocation
 

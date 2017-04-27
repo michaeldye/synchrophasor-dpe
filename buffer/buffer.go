@@ -62,7 +62,7 @@ func (r *RingBuffer) Store(wrapped *synchrophasor_dpe.HorizonDatumWrapper, publi
 	return nil
 }
 
-// PartnerPublished ... TODO: really only sufficient for picking out a partner in a 2-device HA pair, fix that
+// PartnerPublished returns the time that an HA partner published a duplicate record of provided 'wrapped' object *and* the name of the partner up to the length of the ring buffer. -1 is returned if no record of partner publishing could be found
 func (r *RingBuffer) PartnerPublished(wrapped *synchrophasor_dpe.HorizonDatumWrapper) (int64, string) {
 	// nested iteration, the lists are expected to be *very short*
 
