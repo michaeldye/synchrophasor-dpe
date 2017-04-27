@@ -49,7 +49,7 @@ func (s *dpeServerImpl) Store(stream synchrophasor_dpe.SynchrophasorDPE_StoreSer
 			return fmt.Errorf("%v.Store(_) = _, %v", stream, err)
 		}
 
-		if wrappedDatum.Lon != 0 && wrappedDatum.Lat != 0 && wrappedDatum.AgreementId != "" {
+		if wrappedDatum.Lon != 0 && wrappedDatum.Lat != 0 && wrappedDatum.AgreementId != "" && wrappedDatum.Datum != nil {
 			// ensure well-formed before forming key and saving datum
 			agreement.SaveDatumTransmitter(wrappedDatum, s.agreementMap, s.agreementMapMutex)
 
