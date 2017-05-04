@@ -1,10 +1,3 @@
-//
-// Power phasor visualization: 3D helix projection to 2D sine wave
-//
-// Written by Glen Darling, March, 2017.
-// Copyright (c)IBM, 2017; all rights reserved.
-//
-
 import React, { Component } from 'react'
 
 // Control the drawing resolution (so text appears crisp, not blurry)
