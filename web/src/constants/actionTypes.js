@@ -1,3 +1,0 @@
-export const WS_CONNECT = 'WS_CONNECT'
-export const WS_DISCONNECT = 'WS_DISCONNECT'
-export const RECEIVE_MESSAGE = 'RECEIVE_MESSAGE'
