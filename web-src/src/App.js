@@ -514,7 +514,7 @@ class App extends Component {
                           </Col>
                         </Row>
                         <Row>
-                          <Col md={5} mdOffset={1}>
+                          <Col md={7}>
                             <Angles
                               type="current"
                               data={{
@@ -527,7 +527,7 @@ class App extends Component {
                               }}
                             />
                           </Col>
-                          <Col md={6} className="left-justified">
+                          <Col md={5} className="left-justified">
                             <br /><br />
                             <span style={{color: COLOR_PHASE_1}}>Phase 1: {p2cPhase1Angle.toFixed(1)}&deg;</span>
                             <br />
@@ -537,7 +537,7 @@ class App extends Component {
                           </Col>
                         </Row>
                         <Row>
-                          <Col md={6}>
+                          <Col md={7}>
                             <Waves
                               type="current"
                               data={{
@@ -550,7 +550,7 @@ class App extends Component {
                               }}
                             />
                           </Col>
-                          <Col md={6}  className="left-justified">
+                          <Col md={5}  className="left-justified">
                             <br /><br />
                             <span style={{color: COLOR_PHASE_1}}>Phase 1: {this.waveFormula(p2cPhase1Magnitude, 90.0).toFixed(1)}A</span>
                             <br />
@@ -567,7 +567,7 @@ class App extends Component {
                         </Row>
 
                         <Row>
-                          <Col md={5} mdOffset={1}>
+                          <Col md={7}>
                             <Angles
                               type="voltage"
                               data={{
@@ -580,7 +580,7 @@ class App extends Component {
                               }}
                               />
                           </Col>
-                          <Col md={6}  className="left-justified">
+                          <Col md={5}  className="left-justified">
                             <br /><br />
                             <span style={{color: COLOR_PHASE_1}}>Phase 1: {p2vPhase1Angle.toFixed(1)}&deg;</span>
                             <br />
@@ -591,7 +591,7 @@ class App extends Component {
                         </Row>
 
                         <Row>
-                          <Col md={6}>
+                          <Col md={7}>
                             <Waves
                               type="voltage"
                               data={{
@@ -604,7 +604,7 @@ class App extends Component {
                               }}
                             />
                           </Col>
-                          <Col md={6}  className="left-justified">
+                          <Col md={5}  className="left-justified">
                             <br /><br />
                             <span style={{color: COLOR_PHASE_1}}>Phase 1: {this.waveFormula(p2vPhase1Magnitude, 90.0).toFixed(1)}V</span>
                             <br />
