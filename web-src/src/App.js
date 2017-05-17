@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import PulseDot from 'halogen/BounceLoader'
-import PacmanLoader from 'halogen/PacmanLoader'
+import ClipLoader from 'halogen/ClipLoader'
 
 import {
   Navbar,
@@ -292,12 +292,24 @@ class App extends Component {
       p2vPhase3Magnitude = 7350.0;
     }
 
-    const style = {
+    let style = {
       margin: '0 auto',
       color: 'black'
     }
 
-    let pacmanLoader = <div>Gathering data...<PacmanLoader margin={4} color={AMBER_COLOR} style={style} /></div>
+    style = {
+      boxSizing: 'border-box',
+      display: '-webkit-inline-flex',
+      display: 'inline-flex',
+      WebkitFlex: '0 1 auto',
+      flex: '0 1 auto',
+      WebkitFlexDirection: 'row',
+      flexDirection: 'row',
+      WebkitFlexWrap: 'wrap',
+      flexWrap: 'wrap'
+    }
+    let pacmanLoader = <div>Gathering data for {QueryString.id}...<ClipLoader margin={4} color={AMBER_COLOR} style={style} /></div>
+    let partnerLoader = <div>Gathering data for device paired with {QueryString.id}...<ClipLoader margin={4} color={AMBER_COLOR} style={style} /></div>
 
     return (
       <div className="App">
@@ -350,274 +362,265 @@ class App extends Component {
               </div>
             </Col>
             <Col xs={12} md={7}>
-              <h2>PMU Data</h2>
+              <h2>Device Pair Stats</h2>
               <div className="right-side">
                 {
 
                   <div>
-                    <Tabs>
-                      <TabList>
-                        <Tab>{this.state.latestDataStream && this.state.latestDataStream.deviceId} {this.getPrimaryStatus()}</Tab>
-                        <Tab>{this.state.latestDataStream && this.state.latestDataStream.haPartners && this.state.latestDataStream.haPartners.length > 0 && this.state.latestDataStream.haPartners[0]} {this.getPartnerStatus()}</Tab>
-                      </TabList>
+                    { cPhase1Angle &&
+                      <div>
+                    <Row>
+                      <Col>
+                        <h4>Device ID: </h4> {this.state.latestDataStream && this.state.latestDataStream.deviceId} <span style={{display: `inline-flex`}}>{this.getPrimaryStatus()}</span>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <h4>Workload Version: </h4> {this.state.latestDataStream.workloadVersion}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <h4>Last Updated: </h4> {moment(this.state.latestDataStream.datum.ts * 0.000001).toString()}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <h3>Current</h3>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col md={7}>
+                        <Angles
+                          type="current"
+                          data={{
+                            "Phase1Angle": cPhase1Angle,
+                            "Phase1Magnitude": cPhase1Magnitude,
+                            "Phase2Angle": cPhase2Angle,
+                            "Phase2Magnitude": cPhase2Magnitude,
+                            "Phase3Angle": cPhase3Angle,
+                            "Phase3Magnitude": cPhase3Magnitude
+                          }}
+                        />
+                      </Col>
+                      <Col md={5
+                      } className="left-justified">
+                        <br /><br />
+                        <span style={{color: COLOR_PHASE_1}}>Phase 1: {cPhase1Angle.toFixed(1)}&deg;</span>
+                        <br />
+                        <span style={{color: COLOR_PHASE_2}}>Phase 2: {cPhase2Angle.toFixed(1)}&deg;</span>
+                        <br />
+                        <span style={{color: COLOR_PHASE_3}}>Phase 3: {cPhase3Angle.toFixed(1)}&deg;</span>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col md={7}>
+                        <Waves
+                          type="current"
+                          data={{
+                            "Phase1Angle": cPhase1Angle,
+                            "Phase1Magnitude": cPhase1Magnitude,
+                            "Phase2Angle": cPhase2Angle,
+                            "Phase2Magnitude": cPhase2Magnitude,
+                            "Phase3Angle": cPhase3Angle,
+                            "Phase3Magnitude": cPhase3Magnitude
+                          }}
+                        />
+                      </Col>
+                      <Col md={5}  className="left-justified">
+                        <br /><br />
+                        <span style={{color: COLOR_PHASE_1}}>Phase 1: {this.waveFormula(cPhase1Magnitude, 90.0).toFixed(1)}A</span>
+                        <br />
+                        <span style={{color: COLOR_PHASE_2}}>Phase 2: {this.waveFormula(cPhase2Magnitude, 90.0).toFixed(1)}A</span>
+                        <br />
+                        <span style={{color: COLOR_PHASE_3}}>Phase 3: {this.waveFormula(cPhase3Magnitude, 90.0).toFixed(1)}A</span>
+                      </Col>
+                    </Row>
 
-                      <TabPanel>
-                        { cPhase1Angle &&
-                          <div>
-                        <Row>
-                          <Col>
-                            <h3>Device Stats</h3>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <h4>Workload Version: </h4> {this.state.latestDataStream.workloadVersion}
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <h4>Last Updated: </h4> {moment(this.state.latestDataStream.datum.ts * 0.000001).toString()}
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <h3>Current</h3>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col md={7}>
-                            <Angles
-                              type="current"
-                              data={{
-                                "Phase1Angle": cPhase1Angle,
-                                "Phase1Magnitude": cPhase1Magnitude,
-                                "Phase2Angle": cPhase2Angle,
-                                "Phase2Magnitude": cPhase2Magnitude,
-                                "Phase3Angle": cPhase3Angle,
-                                "Phase3Magnitude": cPhase3Magnitude
-                              }}
-                            />
-                          </Col>
-                          <Col md={5
-                          } className="left-justified">
-                            <br /><br />
-                            <span style={{color: COLOR_PHASE_1}}>Phase 1: {cPhase1Angle.toFixed(1)}&deg;</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_2}}>Phase 2: {cPhase2Angle.toFixed(1)}&deg;</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_3}}>Phase 3: {cPhase3Angle.toFixed(1)}&deg;</span>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col md={7}>
-                            <Waves
-                              type="current"
-                              data={{
-                                "Phase1Angle": cPhase1Angle,
-                                "Phase1Magnitude": cPhase1Magnitude,
-                                "Phase2Angle": cPhase2Angle,
-                                "Phase2Magnitude": cPhase2Magnitude,
-                                "Phase3Angle": cPhase3Angle,
-                                "Phase3Magnitude": cPhase3Magnitude
-                              }}
-                            />
-                          </Col>
-                          <Col md={5}  className="left-justified">
-                            <br /><br />
-                            <span style={{color: COLOR_PHASE_1}}>Phase 1: {this.waveFormula(cPhase1Magnitude, 90.0).toFixed(1)}A</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_2}}>Phase 2: {this.waveFormula(cPhase2Magnitude, 90.0).toFixed(1)}A</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_3}}>Phase 3: {this.waveFormula(cPhase3Magnitude, 90.0).toFixed(1)}A</span>
-                          </Col>
-                        </Row>
+                    <Row>
+                      <Col>
+                        <h3>Voltage</h3>
+                      </Col>
+                    </Row>
 
-                        <Row>
-                          <Col>
-                            <h3>Voltage</h3>
-                          </Col>
-                        </Row>
+                    <Row>
+                      <Col md={7}>
+                        <Angles
+                          type="voltage"
+                          data={{
+                            "Phase1Angle": vPhase1Angle,
+                            "Phase1Magnitude": vPhase1Magnitude,
+                            "Phase2Angle": vPhase2Angle,
+                            "Phase2Magnitude": vPhase2Magnitude,
+                            "Phase3Angle": vPhase3Angle,
+                            "Phase3Magnitude": vPhase3Magnitude
+                          }}
+                          />
+                      </Col>
+                      <Col md={5}  className="left-justified">
+                        <br /><br />
+                        <span style={{color: COLOR_PHASE_1}}>Phase 1: {vPhase1Angle.toFixed(1)}&deg;</span>
+                        <br />
+                        <span style={{color: COLOR_PHASE_2}}>Phase 2: {vPhase2Angle.toFixed(1)}&deg;</span>
+                        <br />
+                        <span style={{color: COLOR_PHASE_3}}>Phase 3: {vPhase3Angle.toFixed(1)}&deg;</span>
+                      </Col>
+                    </Row>
 
-                        <Row>
-                          <Col md={7}>
-                            <Angles
-                              type="voltage"
-                              data={{
-                                "Phase1Angle": vPhase1Angle,
-                                "Phase1Magnitude": vPhase1Magnitude,
-                                "Phase2Angle": vPhase2Angle,
-                                "Phase2Magnitude": vPhase2Magnitude,
-                                "Phase3Angle": vPhase3Angle,
-                                "Phase3Magnitude": vPhase3Magnitude
-                              }}
-                              />
-                          </Col>
-                          <Col md={5}  className="left-justified">
-                            <br /><br />
-                            <span style={{color: COLOR_PHASE_1}}>Phase 1: {vPhase1Angle.toFixed(1)}&deg;</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_2}}>Phase 2: {vPhase2Angle.toFixed(1)}&deg;</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_3}}>Phase 3: {vPhase3Angle.toFixed(1)}&deg;</span>
-                          </Col>
-                        </Row>
+                    <Row>
+                      <Col md={7}>
+                        <Waves
+                          type="voltage"
+                          data={{
+                            "Phase1Angle": vPhase1Angle,
+                            "Phase1Magnitude": vPhase1Magnitude,
+                            "Phase2Angle": vPhase2Angle,
+                            "Phase2Magnitude": vPhase2Magnitude,
+                            "Phase3Angle": vPhase3Angle,
+                            "Phase3Magnitude": vPhase3Magnitude
+                          }}
+                        />
+                      </Col>
+                      <Col md={5}  className="left-justified">
+                        <br /><br />
+                        <span style={{color: COLOR_PHASE_1}}>Phase 1: {this.waveFormula(vPhase1Magnitude, 90.0).toFixed(1)}V</span>
+                        <br />
+                        <span style={{color: COLOR_PHASE_2}}>Phase 2: {this.waveFormula(vPhase2Magnitude, 90.0).toFixed(1)}V</span>
+                        <br />
+                        <span style={{color: COLOR_PHASE_3}}>Phase 3: {this.waveFormula(vPhase3Magnitude, 90.0).toFixed(1)}V</span>
+                      </Col>
+                    </Row>
+                    </div>
+                  }
+                  {!cPhase1Angle && pacmanLoader}
 
-                        <Row>
-                          <Col md={7}>
-                            <Waves
-                              type="voltage"
-                              data={{
-                                "Phase1Angle": vPhase1Angle,
-                                "Phase1Magnitude": vPhase1Magnitude,
-                                "Phase2Angle": vPhase2Angle,
-                                "Phase2Magnitude": vPhase2Magnitude,
-                                "Phase3Angle": vPhase3Angle,
-                                "Phase3Magnitude": vPhase3Magnitude
-                              }}
-                            />
-                          </Col>
-                          <Col md={5}  className="left-justified">
-                            <br /><br />
-                            <span style={{color: COLOR_PHASE_1}}>Phase 1: {this.waveFormula(vPhase1Magnitude, 90.0).toFixed(1)}V</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_2}}>Phase 2: {this.waveFormula(vPhase2Magnitude, 90.0).toFixed(1)}V</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_3}}>Phase 3: {this.waveFormula(vPhase3Magnitude, 90.0).toFixed(1)}V</span>
-                          </Col>
-                        </Row>
-                        </div>
-                      }
-                      {!cPhase1Angle && pacmanLoader}
-                      </TabPanel>
 
-                      <TabPanel>
-                        { p2cPhase1Angle &&
-                          <div>
-                        <Row>
-                          <Col>
-                            <h3>Device Stats</h3>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <h4>Workload Version: </h4> {this.state.latestDataStream.workloadVersion}
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <h4>Last Updated: </h4> {moment(this.state.latestDataStream.datum.ts * 0.000001).toString()}
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>
-                            <h3>Current</h3>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col md={7}>
-                            <Angles
-                              type="current"
-                              data={{
-                                "Phase1Angle": p2cPhase1Angle,
-                                "Phase1Magnitude": p2cPhase1Magnitude,
-                                "Phase2Angle": p2cPhase2Angle,
-                                "Phase2Magnitude": p2cPhase2Magnitude,
-                                "Phase3Angle": p2cPhase3Angle,
-                                "Phase3Magnitude": p2cPhase3Magnitude
-                              }}
-                            />
-                          </Col>
-                          <Col md={5} className="left-justified">
-                            <br /><br />
-                            <span style={{color: COLOR_PHASE_1}}>Phase 1: {p2cPhase1Angle.toFixed(1)}&deg;</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_2}}>Phase 2: {p2cPhase2Angle.toFixed(1)}&deg;</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_3}}>Phase 3: {p2cPhase3Angle.toFixed(1)}&deg;</span>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col md={7}>
-                            <Waves
-                              type="current"
-                              data={{
-                                "Phase1Angle": p2cPhase1Angle,
-                                "Phase1Magnitude": p2cPhase1Magnitude,
-                                "Phase2Angle": p2cPhase2Angle,
-                                "Phase2Magnitude": p2cPhase2Magnitude,
-                                "Phase3Angle": p2cPhase3Angle,
-                                "Phase3Magnitude": p2cPhase3Magnitude
-                              }}
-                            />
-                          </Col>
-                          <Col md={5}  className="left-justified">
-                            <br /><br />
-                            <span style={{color: COLOR_PHASE_1}}>Phase 1: {this.waveFormula(p2cPhase1Magnitude, 90.0).toFixed(1)}A</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_2}}>Phase 2: {this.waveFormula(p2cPhase2Magnitude, 90.0).toFixed(1)}A</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_3}}>Phase 3: {this.waveFormula(p2cPhase3Magnitude, 90.0).toFixed(1)}A</span>
-                          </Col>
-                        </Row>
 
-                        <Row>
-                          <Col>
-                            <h3>Voltage</h3>
-                          </Col>
-                        </Row>
+                  { p2cPhase1Angle &&
+                    <div>
+                  <Row>
+                    <Col>
+                      <h4>Device ID: </h4> {this.state.latestPartnerStream && this.state.latestPartnerStream.deviceId} <span style={{display: `inline-flex`}}>{this.getPartnerStatus()}</span>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <h4>Workload Version: </h4> {this.state.latestDataStream.workloadVersion}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <h4>Last Updated: </h4> {moment(this.state.latestDataStream.datum.ts * 0.000001).toString()}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <h3>Current</h3>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md={7}>
+                      <Angles
+                        type="current"
+                        data={{
+                          "Phase1Angle": p2cPhase1Angle,
+                          "Phase1Magnitude": p2cPhase1Magnitude,
+                          "Phase2Angle": p2cPhase2Angle,
+                          "Phase2Magnitude": p2cPhase2Magnitude,
+                          "Phase3Angle": p2cPhase3Angle,
+                          "Phase3Magnitude": p2cPhase3Magnitude
+                        }}
+                      />
+                    </Col>
+                    <Col md={5} className="left-justified">
+                      <br /><br />
+                      <span style={{color: COLOR_PHASE_1}}>Phase 1: {p2cPhase1Angle.toFixed(1)}&deg;</span>
+                      <br />
+                      <span style={{color: COLOR_PHASE_2}}>Phase 2: {p2cPhase2Angle.toFixed(1)}&deg;</span>
+                      <br />
+                      <span style={{color: COLOR_PHASE_3}}>Phase 3: {p2cPhase3Angle.toFixed(1)}&deg;</span>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md={7}>
+                      <Waves
+                        type="current"
+                        data={{
+                          "Phase1Angle": p2cPhase1Angle,
+                          "Phase1Magnitude": p2cPhase1Magnitude,
+                          "Phase2Angle": p2cPhase2Angle,
+                          "Phase2Magnitude": p2cPhase2Magnitude,
+                          "Phase3Angle": p2cPhase3Angle,
+                          "Phase3Magnitude": p2cPhase3Magnitude
+                        }}
+                      />
+                    </Col>
+                    <Col md={5}  className="left-justified">
+                      <br /><br />
+                      <span style={{color: COLOR_PHASE_1}}>Phase 1: {this.waveFormula(p2cPhase1Magnitude, 90.0).toFixed(1)}A</span>
+                      <br />
+                      <span style={{color: COLOR_PHASE_2}}>Phase 2: {this.waveFormula(p2cPhase2Magnitude, 90.0).toFixed(1)}A</span>
+                      <br />
+                      <span style={{color: COLOR_PHASE_3}}>Phase 3: {this.waveFormula(p2cPhase3Magnitude, 90.0).toFixed(1)}A</span>
+                    </Col>
+                  </Row>
 
-                        <Row>
-                          <Col md={7}>
-                            <Angles
-                              type="voltage"
-                              data={{
-                                "Phase1Angle": p2vPhase1Angle,
-                                "Phase1Magnitude": p2vPhase1Magnitude,
-                                "Phase2Angle": p2vPhase2Angle,
-                                "Phase2Magnitude": p2vPhase2Magnitude,
-                                "Phase3Angle": p2vPhase3Angle,
-                                "Phase3Magnitude": p2vPhase3Magnitude
-                              }}
-                              />
-                          </Col>
-                          <Col md={5}  className="left-justified">
-                            <br /><br />
-                            <span style={{color: COLOR_PHASE_1}}>Phase 1: {p2vPhase1Angle.toFixed(1)}&deg;</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_2}}>Phase 2: {p2vPhase2Angle.toFixed(1)}&deg;</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_3}}>Phase 3: {p2vPhase3Angle.toFixed(1)}&deg;</span>
-                          </Col>
-                        </Row>
+                  <Row>
+                    <Col>
+                      <h3>Voltage</h3>
+                    </Col>
+                  </Row>
 
-                        <Row>
-                          <Col md={7}>
-                            <Waves
-                              type="voltage"
-                              data={{
-                                "Phase1Angle": p2vPhase1Angle,
-                                "Phase1Magnitude": p2vPhase1Magnitude,
-                                "Phase2Angle": p2vPhase2Angle,
-                                "Phase2Magnitude": p2vPhase2Magnitude,
-                                "Phase3Angle": p2vPhase3Angle,
-                                "Phase3Magnitude": p2vPhase3Magnitude
-                              }}
-                            />
-                          </Col>
-                          <Col md={5}  className="left-justified">
-                            <br /><br />
-                            <span style={{color: COLOR_PHASE_1}}>Phase 1: {this.waveFormula(p2vPhase1Magnitude, 90.0).toFixed(1)}V</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_2}}>Phase 2: {this.waveFormula(p2vPhase2Magnitude, 90.0).toFixed(1)}V</span>
-                            <br />
-                            <span style={{color: COLOR_PHASE_3}}>Phase 3: {this.waveFormula(p2vPhase3Magnitude, 90.0).toFixed(1)}V</span>
-                          </Col>
-                        </Row>
-                      </div>
-                    }
-                    {!p2cPhase1Angle && pacmanLoader}
-                      </TabPanel>
-                    </Tabs>
+                  <Row>
+                    <Col md={7}>
+                      <Angles
+                        type="voltage"
+                        data={{
+                          "Phase1Angle": p2vPhase1Angle,
+                          "Phase1Magnitude": p2vPhase1Magnitude,
+                          "Phase2Angle": p2vPhase2Angle,
+                          "Phase2Magnitude": p2vPhase2Magnitude,
+                          "Phase3Angle": p2vPhase3Angle,
+                          "Phase3Magnitude": p2vPhase3Magnitude
+                        }}
+                        />
+                    </Col>
+                    <Col md={5}  className="left-justified">
+                      <br /><br />
+                      <span style={{color: COLOR_PHASE_1}}>Phase 1: {p2vPhase1Angle.toFixed(1)}&deg;</span>
+                      <br />
+                      <span style={{color: COLOR_PHASE_2}}>Phase 2: {p2vPhase2Angle.toFixed(1)}&deg;</span>
+                      <br />
+                      <span style={{color: COLOR_PHASE_3}}>Phase 3: {p2vPhase3Angle.toFixed(1)}&deg;</span>
+                    </Col>
+                  </Row>
+
+                  <Row>
+                    <Col md={7}>
+                      <Waves
+                        type="voltage"
+                        data={{
+                          "Phase1Angle": p2vPhase1Angle,
+                          "Phase1Magnitude": p2vPhase1Magnitude,
+                          "Phase2Angle": p2vPhase2Angle,
+                          "Phase2Magnitude": p2vPhase2Magnitude,
+                          "Phase3Angle": p2vPhase3Angle,
+                          "Phase3Magnitude": p2vPhase3Magnitude
+                        }}
+                      />
+                    </Col>
+                    <Col md={5}  className="left-justified">
+                      <br /><br />
+                      <span style={{color: COLOR_PHASE_1}}>Phase 1: {this.waveFormula(p2vPhase1Magnitude, 90.0).toFixed(1)}V</span>
+                      <br />
+                      <span style={{color: COLOR_PHASE_2}}>Phase 2: {this.waveFormula(p2vPhase2Magnitude, 90.0).toFixed(1)}V</span>
+                      <br />
+                      <span style={{color: COLOR_PHASE_3}}>Phase 3: {this.waveFormula(p2vPhase3Magnitude, 90.0).toFixed(1)}V</span>
+                    </Col>
+                  </Row>
+                </div>
+              }
+              {!p2cPhase1Angle && partnerLoader}
 
                     </div>
                   }
